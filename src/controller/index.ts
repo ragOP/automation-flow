@@ -1,27 +1,36 @@
 import { Request, Response } from "express";
 import { UserFormData } from "../types/index";
 import { generateAIResponse } from "../ai";
+import { generatePDF } from "../utils";
 
 export const handleFormSubmit = async (req: Request, res: Response) => {
     try {
         const userData: UserFormData = req.body;
 
-        // Save the user data to the database
         console.log("Received user data:", userData);
 
-         res.status(200).json({ message: "Form submission successful", data: userData });
+        // 1. Call AI to get structured JSON
+        const aiResponse = await generateAIResponse(userData);
+        const cleaned = aiResponse.replace(/```json|```/g, "").trim();
 
+        console.log("Cleaned AI Response:", cleaned);
+        console.log("AI Response:", JSON.parse(cleaned));
 
-        // Call the LLM API with the user data
-        const aiResponse: string = await generateAIResponse(userData);
+        // 2. Generate PDF based on AI JSON
+        const pdfBuffer = await generatePDF(JSON.parse(cleaned));
 
-        console.log("AI Response:", aiResponse);
+        
+        // 3. Return the PDF as a file download
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", "attachment; filename=horoscope.pdf");
+        
+        return res.send(pdfBuffer);
 
-        // append the json reponse with the pre-built template
-
-        res.status(200).json({ message: "Final PDF sent to the user", aiResponse  });
     } catch (error: any) {
         console.error("Error handling form submission:", error);
-        res.status(500).json({ message: "Internal Server Error", error: error.message });
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: error.message,
+        });
     }
-}
+};

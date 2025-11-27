@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Luxury Horoscope Report</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Georgia", serif;
+        background: #0b0f2e;
+        color: #eee;
+      }
+
+      .page {
+        width: 100%;
+        padding: 60px 55px;
+        background: #0b0f2e;
+        box-sizing: border-box;
+      }
+
+      .container {
+        max-width: 760px;
+        margin: auto;
+        background: rgba(255, 255, 255, 0.04);
+        padding: 45px 55px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 215, 0, 0.25);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: "Georgia", serif;
+        margin: 0;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 34px;
+        letter-spacing: 1px;
+        margin-bottom: 25px;
+        color: #f6d374;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        margin-top: 40px;
+        font-size: 22px;
+        color: #f4c55c;
+        border-left: 4px solid #d7b35e;
+        padding-left: 12px;
+      }
+
+      h3 {
+        font-size: 18px;
+        margin-top: 25px;
+        color: #e3c178;
+      }
+
+      p {
+        line-height: 1.7;
+        margin: 12px 0;
+        font-size: 15px;
+        color: #f2f2f2;
+        text-align: justify;
+      }
+
+      .info-box {
+        background: rgba(255, 255, 255, 0.08);
+        padding: 20px 25px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 215, 0, 0.28);
+        margin-bottom: 30px;
+      }
+
+      .label {
+        color: #f6d374;
+        font-weight: bold;
+      }
+
+      .separator {
+        margin: 25px auto;
+        width: 80%;
+        height: 1px;
+        background: linear-gradient(
+          to right,
+          transparent,
+          #c09b4d,
+          transparent
+        );
+      }
+
+      .two-column {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        gap: 20px;
+      }
+
+      .two-column div {
+        width: 50%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page">
+      <div class="container">
+        <h1>{{fullName}} — Horoscope Report</h1>
+
+        <div class="info-box">
+          <p><span class="label">Zodiac Sign:</span> {{zodiacSign}}</p>
+          <p><span class="label">Element:</span> {{element}}</p>
+          <p><span class="label">Ruling Planet:</span> {{rulingPlanet}}</p>
+          <p><span class="label">Life Path Number:</span> {{lifePathNumber}}</p>
+        </div>
+
+        <div class="separator"></div>
+
+        <h2>Personality Overview</h2>
+        <p>{{personality}}</p>
+
+        <h2>Strengths</h2>
+        <p>{{strengths}}</p>
+
+        <h2>Weaknesses</h2>
+        <p>{{weaknesses}}</p>
+
+        <h2>Career Insight</h2>
+        <p>{{career}}</p>
+
+        <h2>Love & Relationships</h2>
+        <p>{{love}}</p>
+
+        <h2>Friendships & Social Life</h2>
+        <p>{{friendships}}</p>
+
+        <h2>Health & Wellness</h2>
+        <p>{{health}}</p>
+
+        <h2>Financial Outlook</h2>
+        <p>{{finance}}</p>
+
+        <h2>Family & Home Life</h2>
+        <p>{{familyAndHome}}</p>
+
+        <h2>Lucky Insights</h2>
+
+        <div class="two-column">
+          <div>
+            <p><span class="label">Lucky Numbers:</span> {{luckyNumbers}}</p>
+            <p><span class="label">Lucky Colors:</span> {{luckyColors}}</p>
+          </div>
+          <div>
+            <p><span class="label">Favorable Days:</span> {{favorableDays}}</p>
+          </div>
+        </div>
+
+        <h2>Future Outlook</h2>
+        <p>{{futureOutlook}}</p>
+
+        <h2>Overall Guidance</h2>
+        <p>{{overallAdvice}}</p>
+      </div>
+    </div>
+  </body>
+</html>

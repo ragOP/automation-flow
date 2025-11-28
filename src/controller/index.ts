@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { UserFormData } from "../types/index";
 import { generateAIResponse } from "../ai";
 import { generatePDF } from "../utils";
+import { uploadPDF } from "../utils/upload_pdf";
 
 export const handleFormSubmit = async (req: Request, res: Response) => {
     try {
@@ -23,17 +24,18 @@ export const handleFormSubmit = async (req: Request, res: Response) => {
         // 3. Generate PDF based on AI JSON
         const pdfBuffer = await generatePDF(JSON.parse(cleaned));
 
-        // 4. Save PDF to a file (optional)
-        const downloadPath =  path.join(__dirname, "../downloads/horoscope.pdf");
-        fs.writeFileSync(downloadPath, pdfBuffer);
-
-        console.log(`PDF saved to ${downloadPath}`);
-
-        // 5. Return the PDF as a file download
-        res.setHeader("Content-Type", "application/pdf");
-        res.setHeader("Content-Disposition", "attachment; filename=horoscope.pdf");
+        // 4. Upload PDF to Cloudinary and get URL
+        const tempPdfPath = path.join(__dirname, `../downloads/${Date.now()}_horoscope.pdf`);
+        fs.writeFileSync(tempPdfPath, pdfBuffer);
         
-        return res.send(pdfBuffer);
+        const pdfUrl = await uploadPDF(tempPdfPath, 'horoscopes');
+        console.log("Uploaded PDF URL:", pdfUrl);
+        
+        return res.send({
+            message: "Form submitted successfully",
+            aiResponse: JSON.parse(cleaned),
+            pdfUrl,
+        });
 
     } catch (error: any) {
         console.error("Error handling form submission:", error);

@@ -31,8 +31,6 @@ export const horoscopeWorker = new Worker(
         const aiResponse = await generateAIResponse(userData);
         const cleaned = aiResponse.replace(/```json|```/g, "").trim();
 
-        console.log("AI Response JSON:", cleaned);
-
         // 2. Generate PDF based on AI JSON
         const pdfBuffer = await generatePDF(JSON.parse(cleaned));
 
@@ -42,10 +40,12 @@ export const horoscopeWorker = new Worker(
 
         const pdfUrl = await uploadPDF(tempPdfPath, 'horoscopes');
 
+        console.log("Uploaded PDF URL:", pdfUrl);
+
         // 4. Prepare WhatsApp message template
         const message = waTemplate({ fullName: `${userData.firstName} ${userData.lastName}`, zodiacSign: JSON.parse(cleaned).zodiacSign, link: pdfUrl });
 
-        console.log(message)
+        console.log("message <<<<", message);
 
         // 5. Send the pre-built message template with the PDF URL on whatsapp
         // await sendWhatsAppMessage(userData.phoneNumber, message);

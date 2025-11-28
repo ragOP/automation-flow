@@ -10,7 +10,6 @@ import { generateAIResponse } from "../ai";
 import { generatePDF } from "../utils";
 import { uploadPDF } from "../utils/upload_pdf";
 import { UserFormData } from "../types/index";
-import { waTemplate } from "../prompt/wa";
 import { handleSendWhatsAppMessage } from "../utils/send_whatsapp";
 
 const connection = new IORedis(ENV.REDIS_URL as string, {

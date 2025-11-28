@@ -11,7 +11,7 @@ export const handleSendWhatsAppMessage = async (
 
     try {
         const payload = {
-            mobileNumber: phoneNumber,
+            phone: phoneNumber,
             link,
             firstName,
             lastName,

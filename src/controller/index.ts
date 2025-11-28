@@ -1,3 +1,5 @@
+import path from "node:path";
+import fs from "node:fs";
 import { Request, Response } from "express";
 import { UserFormData } from "../types/index";
 import { generateAIResponse } from "../ai";
@@ -19,8 +21,14 @@ export const handleFormSubmit = async (req: Request, res: Response) => {
         // 2. Generate PDF based on AI JSON
         const pdfBuffer = await generatePDF(JSON.parse(cleaned));
 
-        
-        // 3. Return the PDF as a file download
+        // 3. Save PDF to a file (optional)
+        const downloadPath =  path.join(__dirname, "../downloads/horoscope.pdf");
+        fs.writeFileSync(downloadPath, pdfBuffer);
+
+        console.log(`PDF saved to ${downloadPath}`);
+
+
+        // 4. Return the PDF as a file download
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader("Content-Disposition", "attachment; filename=horoscope.pdf");
         

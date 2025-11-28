@@ -6,6 +6,7 @@ const app: Express = express();
 const port: number = Number(ENV.PORT) || 8000;
 
 import router from "./router/index";
+import { handleConnectToDB } from "./config/db";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -14,6 +15,13 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
+
+// Connect to Database
+(async () => {
+  await handleConnectToDB();
+})();
+
 
 app.use("/api", router);
 
@@ -32,4 +40,4 @@ app.listen(port, () => {
 // Import and start workers
 import "./workers/index";
 
-console.log("⚙ Worker started in same process...");
+console.log("⚙ Worker started, waiting for jobs...");

@@ -1,10 +1,11 @@
 import path from "node:path";
-import fs, { link } from "node:fs";
+import fs from "node:fs";
 
 import { Worker } from "bullmq";
 import IORedis from "ioredis";
 
 import { ENV } from "../config/env";
+import { OrderModel } from "../models";
 
 import { generateAIResponse } from "../ai";
 import { generatePDF } from "../utils";
@@ -63,7 +64,14 @@ export const horoscopeWorker = new Worker(
     );
 
     // 6. Add the PDF URL to job the user data in mongoDB for future reference
-    // await saveUserHoroscopeToDB(userData.userId, pdfUrl);
+    const updateOrder = await OrderModel.findByIdAndUpdate(userId, {
+      pdfUrl,
+      isWhatsAppSent: isSent,
+    });
+
+    if (!updateOrder) {
+      console.error("Failed to update order with PDF URL for userId:", userId);
+    }
 
     console.log(
       `Processed job for ${userData.firstName} ${userData.lastName}, PDF URL: ${pdfUrl}`

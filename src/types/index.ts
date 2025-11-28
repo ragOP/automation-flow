@@ -6,3 +6,8 @@ export interface UserFormData {
     phoneNumber: string;
     email?: string;
 }
+
+export interface OrderDocument extends UserFormData, Document {
+    pdfUrl: string;
+    isWhatsAppSent: boolean;
+}

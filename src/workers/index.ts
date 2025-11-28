@@ -1,5 +1,5 @@
 import path from "node:path";
-import fs from "node:fs";
+import fs, { link } from "node:fs";
 
 import { Worker } from "bullmq";
 import IORedis from "ioredis";
@@ -10,6 +10,7 @@ import { generateAIResponse } from "../ai";
 import { generatePDF } from "../utils";
 import { uploadPDF } from "../utils/upload_pdf";
 import { UserFormData } from "../types/index";
+import { waTemplate } from "../template/wa";
 
 
 const connection = new IORedis(ENV.REDIS_URL as string, {
@@ -41,10 +42,15 @@ export const horoscopeWorker = new Worker(
 
         const pdfUrl = await uploadPDF(tempPdfPath, 'horoscopes');
 
-        // 4. Send the pre-built message template with the PDF URL on whatsapp
-        // await sendWhatsAppMessage(userData.phoneNumber, pdfUrl);
+        // 4. Prepare WhatsApp message template
+        const message = waTemplate({ fullName: `${userData.firstName} ${userData.lastName}`, zodiacSign: JSON.parse(cleaned).zodiacSign, link: pdfUrl });
 
-        // 5. Add the PDF URL to job the user data in mongoDB for future reference
+        console.log(message)
+
+        // 5. Send the pre-built message template with the PDF URL on whatsapp
+        // await sendWhatsAppMessage(userData.phoneNumber, message);
+
+        // 6. Add the PDF URL to job the user data in mongoDB for future reference
         // await saveUserHoroscopeToDB(userData.userId, pdfUrl);
 
         console.log(`Processed job for ${userData.firstName} ${userData.lastName}, PDF URL: ${pdfUrl}`);

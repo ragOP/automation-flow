@@ -10,50 +10,65 @@ import { generateAIResponse } from "../ai";
 import { generatePDF } from "../utils";
 import { uploadPDF } from "../utils/upload_pdf";
 import { UserFormData } from "../types/index";
-import { waTemplate } from "../template/wa";
-
+import { waTemplate } from "../prompt/wa";
 
 const connection = new IORedis(ENV.REDIS_URL as string, {
   maxRetriesPerRequest: null,
   tls: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+  },
 });
 
 export const horoscopeWorker = new Worker(
-    "horoscopeQueue",
-    async (job) => {
-        const {userId, ...userData} = job.data as UserFormData & { userId: string };
-        
-        console.log(`Processing job for user: ${userData.firstName} ${userData.lastName}`);
+  "horoscopeQueue",
+  async (job) => {
+    const { userId, ...userData } = job.data as UserFormData & {
+      userId: string;
+    };
 
-        // 1. Call AI to get structured JSON
-        const aiResponse = await generateAIResponse(userData);
-        const cleaned = aiResponse.replace(/```json|```/g, "").trim();
+    console.log(
+      `Processing job for user: ${userData.firstName} ${userData.lastName}`
+    );
 
-        // 2. Generate PDF based on AI JSON
-        const pdfBuffer = await generatePDF(JSON.parse(cleaned));
+    // 1. Call AI to get structured JSON
+    const aiResponse = await generateAIResponse(userData);
+    const cleaned = aiResponse.replace(/```json|```/g, "").trim();
 
-        // 3. Upload PDF to Cloudinary and get URL
-        const tempPdfPath = path.join(__dirname, `../downloads/${Date.now()}_horoscope.pdf`);
-        fs.writeFileSync(tempPdfPath, pdfBuffer);
+    // 2. Generate PDF based on AI JSON
+    const pdfBuffer = await generatePDF(JSON.parse(cleaned));
 
-        const pdfUrl = await uploadPDF(tempPdfPath, 'horoscopes');
+    // Create /downloads folder if not exists
+    const downloadsDir = path.join(__dirname, "../downloads");
 
-        console.log("Uploaded PDF URL:", pdfUrl);
+    if (!fs.existsSync(downloadsDir)) {
+      fs.mkdirSync(downloadsDir, { recursive: true });
+      console.log("Created downloads directory:", downloadsDir);
+    }
 
-        // 4. Prepare WhatsApp message template
-        const message = waTemplate({ fullName: `${userData.firstName} ${userData.lastName}`, zodiacSign: JSON.parse(cleaned).zodiacSign, link: pdfUrl });
+    // 3. Upload PDF to Cloudinary and get URL
+    const tempPdfPath = path.join(downloadsDir, `${Date.now()}_horoscope.pdf`);
+    fs.writeFileSync(tempPdfPath, pdfBuffer);
 
-        console.log("message <<<<", message);
+    const pdfUrl = await uploadPDF(tempPdfPath, "horoscopes");
 
-        // 5. Send the pre-built message template with the PDF URL on whatsapp
-        // await sendWhatsAppMessage(userData.phoneNumber, message);
+    // 4. Prepare WhatsApp message template
+    const message = waTemplate({
+      fullName: `${userData.firstName} ${userData.lastName}`,
+      zodiacSign: JSON.parse(cleaned).zodiacSign,
+      link: pdfUrl,
+    });
 
-        // 6. Add the PDF URL to job the user data in mongoDB for future reference
-        // await saveUserHoroscopeToDB(userData.userId, pdfUrl);
+    console.log("message <<<<", message);
 
-        console.log(`Processed job for ${userData.firstName} ${userData.lastName}, PDF URL: ${pdfUrl}`);
-    },
-    { connection }
+    // 5. Send the pre-built message template with the PDF URL on whatsapp
+    // await sendWhatsAppMessage(userData.phoneNumber, message);
+
+    // 6. Add the PDF URL to job the user data in mongoDB for future reference
+    // await saveUserHoroscopeToDB(userData.userId, pdfUrl);
+
+    console.log(
+      `Processed job for ${userData.firstName} ${userData.lastName}, PDF URL: ${pdfUrl}`
+    );
+  },
+  { connection }
 );

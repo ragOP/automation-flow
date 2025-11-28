@@ -14,6 +14,11 @@ It collects user details → generates a personalized horoscope using AI → con
 
 All heavy tasks run asynchronously with **BullMQ** + **Upstash Redis**.
 
+
+## Working Architecture
+
+![Working Architecture Placeholder](https://res.cloudinary.com/dacwig3xk/image/upload/fl_preserve_transparency/v1764337649/ChatGPT_Image_Nov_28_2025_07_05_48_PM_uuxjxk.jpg?_s=public-apps)
+
 ---
 
 ## 🚀 Features
@@ -98,9 +103,3 @@ WHATSAPP_API_KEY=your-whatsapp-api-key
 
 3) **Delivery**
 - User receives their **personalized horoscope PDF** via WhatsApp.
-
----
-
-If you'd like, I can also:
-- Rename `readme.md` to `README.md` for convention.
-- Run a quick markdown preview or lint.

@@ -3,7 +3,7 @@ import cors from "cors";
 import { ENV } from "./config/env";
 
 const app: Express = express();
-const port: number = Number(ENV.PORT);
+const port: number = Number(ENV.PORT) || 8000;
 
 import router from "./router/index";
 
@@ -28,3 +28,8 @@ app.use((req: Request, res: Response) => {
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+// Import and start workers
+import "./workers/index";
+
+console.log("⚙ Worker started in same process...");

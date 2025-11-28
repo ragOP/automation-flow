@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc",
+    "build": "tsc",
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
-    "dev-redis": "ts-node src/workers/index.ts"
+    "dev-worker": "nodemon src/workers/index.ts"
   },
   "keywords": [],
   "author": "",

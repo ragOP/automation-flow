@@ -16,6 +16,7 @@
     "@cloudinary-util/types": "^1.6.0",
     "@google/generative-ai": "^0.24.1",
     "@types/cors": "^2.8.19",
+    "axios": "^1.13.2",
     "bullmq": "^5.65.0",
     "cloudinary": "^2.8.0",
     "cors": "^2.8.5",

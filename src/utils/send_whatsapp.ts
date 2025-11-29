@@ -19,7 +19,7 @@ export const handleSendWhatsAppMessage = async (
             placeOfBirth
         }
 
-        const response = await axios.post('https://automations.chatsonway.com/webhook/69254b511b9845c02d55251a', payload, {
+        const response = await axios.post('https://automations.chatsonway.com/webhook/6929e6b11b9845c02d58a1c0', payload, {
             headers: {
                 'Content-Type': 'application/json',
             },
